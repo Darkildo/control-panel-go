@@ -1,21 +1,114 @@
 package main
 
 import (
-  "fmt"
+	"errors"
+	"net"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"control-panel-go/internal/database"
+	"control-panel-go/internal/interceptor"
+	"control-panel-go/internal/repository"
+	"control-panel-go/internal/service"
+	"control-panel-go/pkg/jwt"
+
+	pb "control-panel-go/gen/pb"
+
+	"github.com/improbable-eng/grpc-web/go/grpcweb"
+	"github.com/rs/zerolog"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
-//TIP <p>To run your code, right-click the code and select <b>Run</b>.</p> <p>Alternatively, click
-// the <icon src="AllIcons.Actions.Execute"/> icon in the gutter and select the <b>Run</b> menu item from here.</p>
+const (
+	grpcPort    = ":50051"
+	grpcWebPort = ":8080"
+	dbPath      = "control_panel.db"
+	jwtSecret   = "pupa-i-lupa"
+	jwtDuration = 24 * time.Hour
+)
 
 func main() {
-  //TIP <p>Press <shortcut actionId="ShowIntentionActions"/> when your caret is at the underlined text
-  // to see how GoLand suggests fixing the warning.</p><p>Alternatively, if available, click the lightbulb to view possible fixes.</p>
-  s := "gopher"
-  fmt.Printf("Hello and welcome, %s!\n", s)
+	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
-  for i := 1; i <= 5; i++ {
-	//TIP <p>To start your debugging session, right-click your code in the editor and select the Debug option.</p> <p>We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-	// for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.</p>
-	fmt.Println("i =", 100/i)
-  }
+	db, err := database.New(dbPath, logger)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("failed to init database")
+	}
+	defer db.Close()
+
+	jwtManager := jwt.NewManager(jwtSecret, jwtDuration)
+
+	userRepo := repository.NewUserRepository(db)
+	deviceRepo := repository.NewDeviceRepository(db)
+	configRepo := repository.NewConfigRepository(db)
+
+	authSvc := service.NewAuthService(userRepo, jwtManager, logger)
+	deviceSvc := service.NewDeviceService(deviceRepo, logger)
+	configSvc := service.NewConfigService(configRepo, deviceRepo, logger)
+
+	grpcServer := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			interceptor.LoggingInterceptor(logger),
+			interceptor.AuthInterceptor(jwtManager, logger),
+		),
+	)
+
+	pb.RegisterAuthServiceServer(grpcServer, authSvc)
+	pb.RegisterDeviceServiceServer(grpcServer, deviceSvc)
+	pb.RegisterConfigServiceServer(grpcServer, configSvc)
+
+	reflection.Register(grpcServer) // grpcurl/etc
+
+	listener, err := net.Listen("tcp", grpcPort)
+	if err != nil {
+		logger.Fatal().Str("port", grpcPort).Err(err).Msg("failed to listen")
+	}
+
+	go func() {
+		logger.Info().Str("port", grpcPort).Msg("gRPC server starting")
+		if err := grpcServer.Serve(listener); err != nil {
+			logger.Fatal().Err(err).Msg("gRPC server failed")
+		}
+	}()
+
+	wrappedGrpc := grpcweb.WrapServer(grpcServer,
+		grpcweb.WithOriginFunc(func(origin string) bool {
+			return true
+		}),
+		grpcweb.WithAllowedRequestHeaders([]string{"*"}),
+	)
+
+	httpServer := &http.Server{
+		Addr: grpcWebPort,
+		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if wrappedGrpc.IsGrpcWebRequest(r) || wrappedGrpc.IsAcceptableGrpcCorsRequest(r) {
+				wrappedGrpc.ServeHTTP(w, r)
+				return
+			}
+			http.NotFound(w, r)
+		}),
+	}
+
+	go func() {
+		logger.Info().Str("port", grpcWebPort).Msg("gRPC-Web server starting")
+		if err = httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			logger.Fatal().Err(err).Msg("gRPC-Web server failed")
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	logger.Info().Msg("shutting down servers...")
+	grpcServer.GracefulStop()
+	err = httpServer.Close()
+	if err != nil {
+		logger.Error().Err(err).Msg("failed to close http server(gracefully)")
+	}
+	logger.Info().Msg("servers stopped")
 }
