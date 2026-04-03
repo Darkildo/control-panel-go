@@ -5,6 +5,7 @@ import (
 
 	"control-panel-go/internal/auth"
 	"control-panel-go/internal/repository"
+	"control-panel-go/pkg/jwt"
 
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc/codes"
@@ -16,11 +17,11 @@ import (
 type AuthService struct {
 	pb.UnimplementedAuthServiceServer
 	userRepo   *repository.UserRepository
-	jwtManager *auth.JWTManager
+	jwtManager *jwt.Manager
 	logger     zerolog.Logger
 }
 
-func NewAuthService(userRepo *repository.UserRepository, jwtManager *auth.JWTManager, logger zerolog.Logger) *AuthService {
+func NewAuthService(userRepo *repository.UserRepository, jwtManager *jwt.Manager, logger zerolog.Logger) *AuthService {
 	return &AuthService{
 		userRepo:   userRepo,
 		jwtManager: jwtManager,
