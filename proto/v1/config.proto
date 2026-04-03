@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package controlpanel.v1;
+
+option go_package = "control-panel-go/gen/pb";
+
+import "google/protobuf/timestamp.proto";
+
+service ConfigService {
+  rpc CreateConfig (CreateConfigRequest) returns (ConfigResponse);
+  rpc ListConfigs (ListConfigsRequest) returns (ListConfigsResponse);
+  rpc ApplyConfig (ApplyConfigRequest) returns (ApplyConfigResponse);
+}
+
+message CreateConfigRequest {
+  int64 device_id = 1;
+  string version = 2;
+  string content = 3;
+}
+
+message ListConfigsRequest {
+  int64 device_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ConfigResponse {
+  int64 id = 1;
+  int64 device_id = 2;
+  string version = 3;
+  string content = 4;
+  google.protobuf.Timestamp created_at = 5;
+  optional google.protobuf.Timestamp applied_at = 6;
+}
+
+message ListConfigsResponse {
+  repeated ConfigResponse configs = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message ApplyConfigRequest {
+  int64 id = 1;
+}
+
+message ApplyConfigResponse {
+  bool success = 1;
+  google.protobuf.Timestamp applied_at = 2;
+}

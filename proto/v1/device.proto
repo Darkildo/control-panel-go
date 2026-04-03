@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package controlpanel.v1;
+
+option go_package = "control-panel-go/gen/pb";
+
+import "google/protobuf/timestamp.proto";
+
+service DeviceService {
+  rpc CreateDevice (CreateDeviceRequest) returns (DeviceResponse);
+  rpc ListDevices (ListDevicesRequest) returns (ListDevicesResponse);
+}
+
+message CreateDeviceRequest {
+  string hostname = 1;
+  string ip = 2;
+  string location = 3;
+  bool is_active = 4;
+}
+
+message ListDevicesRequest {
+  optional bool is_active = 1;
+  string hostname_search = 2;  // substring search
+}
+
+message DeviceResponse {
+  int64 id = 1;
+  string hostname = 2;
+  string ip = 3;
+  string location = 4;
+  bool is_active = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message ListDevicesResponse {
+  repeated DeviceResponse devices = 1;
+}
