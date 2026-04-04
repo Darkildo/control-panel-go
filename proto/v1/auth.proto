@@ -4,9 +4,18 @@ package controlpanel.v1;
 
 option go_package = "control-panel-go/gen/pb";
 
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
 service AuthService {
   rpc Register (RegisterRequest) returns (AuthResponse);
   rpc Login (LoginRequest) returns (AuthResponse);
+
+  // User CRUD
+  rpc GetUser (GetUserRequest) returns (UserResponse);
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
+  rpc UpdateUser (UpdateUserRequest) returns (UserResponse);
+  rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty);
 }
 
 message RegisterRequest {
@@ -21,4 +30,32 @@ message LoginRequest {
 
 message AuthResponse {
   string token = 1;
+}
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message ListUsersRequest {
+  string login_search = 1;
+}
+
+message UpdateUserRequest {
+  int64 id = 1;
+  optional string login = 2;
+  optional string password = 3;
+}
+
+message DeleteUserRequest {
+  int64 id = 1;
+}
+
+message UserResponse {
+  int64 id = 1;
+  string login = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+message ListUsersResponse {
+  repeated UserResponse users = 1;
 }

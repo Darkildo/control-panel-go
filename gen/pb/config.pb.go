@@ -9,6 +9,7 @@ package pb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -82,6 +83,50 @@ func (x *CreateConfigRequest) GetContent() string {
 	return ""
 }
 
+type GetConfigRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetConfigRequest) Reset() {
+	*x = GetConfigRequest{}
+	mi := &file_config_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetConfigRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetConfigRequest) ProtoMessage() {}
+
+func (x *GetConfigRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_config_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetConfigRequest.ProtoReflect.Descriptor instead.
+func (*GetConfigRequest) Descriptor() ([]byte, []int) {
+	return file_config_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetConfigRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 type ListConfigsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DeviceId      int64                  `protobuf:"varint,1,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
@@ -93,7 +138,7 @@ type ListConfigsRequest struct {
 
 func (x *ListConfigsRequest) Reset() {
 	*x = ListConfigsRequest{}
-	mi := &file_config_proto_msgTypes[1]
+	mi := &file_config_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -105,7 +150,7 @@ func (x *ListConfigsRequest) String() string {
 func (*ListConfigsRequest) ProtoMessage() {}
 
 func (x *ListConfigsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_config_proto_msgTypes[1]
+	mi := &file_config_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -118,7 +163,7 @@ func (x *ListConfigsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConfigsRequest.ProtoReflect.Descriptor instead.
 func (*ListConfigsRequest) Descriptor() ([]byte, []int) {
-	return file_config_proto_rawDescGZIP(), []int{1}
+	return file_config_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ListConfigsRequest) GetDeviceId() int64 {
@@ -142,6 +187,110 @@ func (x *ListConfigsRequest) GetPageSize() int32 {
 	return 0
 }
 
+type UpdateConfigRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Version       *string                `protobuf:"bytes,2,opt,name=version,proto3,oneof" json:"version,omitempty"`
+	Content       *string                `protobuf:"bytes,3,opt,name=content,proto3,oneof" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateConfigRequest) Reset() {
+	*x = UpdateConfigRequest{}
+	mi := &file_config_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateConfigRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateConfigRequest) ProtoMessage() {}
+
+func (x *UpdateConfigRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_config_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateConfigRequest.ProtoReflect.Descriptor instead.
+func (*UpdateConfigRequest) Descriptor() ([]byte, []int) {
+	return file_config_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UpdateConfigRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UpdateConfigRequest) GetVersion() string {
+	if x != nil && x.Version != nil {
+		return *x.Version
+	}
+	return ""
+}
+
+func (x *UpdateConfigRequest) GetContent() string {
+	if x != nil && x.Content != nil {
+		return *x.Content
+	}
+	return ""
+}
+
+type DeleteConfigRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteConfigRequest) Reset() {
+	*x = DeleteConfigRequest{}
+	mi := &file_config_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteConfigRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteConfigRequest) ProtoMessage() {}
+
+func (x *DeleteConfigRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_config_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteConfigRequest.ProtoReflect.Descriptor instead.
+func (*DeleteConfigRequest) Descriptor() ([]byte, []int) {
+	return file_config_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DeleteConfigRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 type ConfigResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -156,7 +305,7 @@ type ConfigResponse struct {
 
 func (x *ConfigResponse) Reset() {
 	*x = ConfigResponse{}
-	mi := &file_config_proto_msgTypes[2]
+	mi := &file_config_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -168,7 +317,7 @@ func (x *ConfigResponse) String() string {
 func (*ConfigResponse) ProtoMessage() {}
 
 func (x *ConfigResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_config_proto_msgTypes[2]
+	mi := &file_config_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -181,7 +330,7 @@ func (x *ConfigResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ConfigResponse.ProtoReflect.Descriptor instead.
 func (*ConfigResponse) Descriptor() ([]byte, []int) {
-	return file_config_proto_rawDescGZIP(), []int{2}
+	return file_config_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ConfigResponse) GetId() int64 {
@@ -238,7 +387,7 @@ type ListConfigsResponse struct {
 
 func (x *ListConfigsResponse) Reset() {
 	*x = ListConfigsResponse{}
-	mi := &file_config_proto_msgTypes[3]
+	mi := &file_config_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -250,7 +399,7 @@ func (x *ListConfigsResponse) String() string {
 func (*ListConfigsResponse) ProtoMessage() {}
 
 func (x *ListConfigsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_config_proto_msgTypes[3]
+	mi := &file_config_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -263,7 +412,7 @@ func (x *ListConfigsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConfigsResponse.ProtoReflect.Descriptor instead.
 func (*ListConfigsResponse) Descriptor() ([]byte, []int) {
-	return file_config_proto_rawDescGZIP(), []int{3}
+	return file_config_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ListConfigsResponse) GetConfigs() []*ConfigResponse {
@@ -303,7 +452,7 @@ type ApplyConfigRequest struct {
 
 func (x *ApplyConfigRequest) Reset() {
 	*x = ApplyConfigRequest{}
-	mi := &file_config_proto_msgTypes[4]
+	mi := &file_config_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -315,7 +464,7 @@ func (x *ApplyConfigRequest) String() string {
 func (*ApplyConfigRequest) ProtoMessage() {}
 
 func (x *ApplyConfigRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_config_proto_msgTypes[4]
+	mi := &file_config_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -328,7 +477,7 @@ func (x *ApplyConfigRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApplyConfigRequest.ProtoReflect.Descriptor instead.
 func (*ApplyConfigRequest) Descriptor() ([]byte, []int) {
-	return file_config_proto_rawDescGZIP(), []int{4}
+	return file_config_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ApplyConfigRequest) GetId() int64 {
@@ -348,7 +497,7 @@ type ApplyConfigResponse struct {
 
 func (x *ApplyConfigResponse) Reset() {
 	*x = ApplyConfigResponse{}
-	mi := &file_config_proto_msgTypes[5]
+	mi := &file_config_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -360,7 +509,7 @@ func (x *ApplyConfigResponse) String() string {
 func (*ApplyConfigResponse) ProtoMessage() {}
 
 func (x *ApplyConfigResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_config_proto_msgTypes[5]
+	mi := &file_config_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -373,7 +522,7 @@ func (x *ApplyConfigResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApplyConfigResponse.ProtoReflect.Descriptor instead.
 func (*ApplyConfigResponse) Descriptor() ([]byte, []int) {
-	return file_config_proto_rawDescGZIP(), []int{5}
+	return file_config_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ApplyConfigResponse) GetSuccess() bool {
@@ -394,15 +543,27 @@ var File_config_proto protoreflect.FileDescriptor
 
 const file_config_proto_rawDesc = "" +
 	"\n" +
-	"\fconfig.proto\x12\x0fcontrolpanel.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"f\n" +
+	"\fconfig.proto\x12\x0fcontrolpanel.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"f\n" +
 	"\x13CreateConfigRequest\x12\x1b\n" +
 	"\tdevice_id\x18\x01 \x01(\x03R\bdeviceId\x12\x18\n" +
 	"\aversion\x18\x02 \x01(\tR\aversion\x12\x18\n" +
-	"\acontent\x18\x03 \x01(\tR\acontent\"b\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\"\"\n" +
+	"\x10GetConfigRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"b\n" +
 	"\x12ListConfigsRequest\x12\x1b\n" +
 	"\tdevice_id\x18\x01 \x01(\x03R\bdeviceId\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"\xfb\x01\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"{\n" +
+	"\x13UpdateConfigRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1d\n" +
+	"\aversion\x18\x02 \x01(\tH\x00R\aversion\x88\x01\x01\x12\x1d\n" +
+	"\acontent\x18\x03 \x01(\tH\x01R\acontent\x88\x01\x01B\n" +
+	"\n" +
+	"\b_versionB\n" +
+	"\n" +
+	"\b_content\"%\n" +
+	"\x13DeleteConfigRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\xfb\x01\n" +
 	"\x0eConfigResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
 	"\tdevice_id\x18\x02 \x01(\x03R\bdeviceId\x12\x18\n" +
@@ -423,10 +584,13 @@ const file_config_proto_rawDesc = "" +
 	"\x13ApplyConfigResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x129\n" +
 	"\n" +
-	"applied_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tappliedAt2\x9a\x02\n" +
+	"applied_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tappliedAt2\x90\x04\n" +
 	"\rConfigService\x12U\n" +
-	"\fCreateConfig\x12$.controlpanel.v1.CreateConfigRequest\x1a\x1f.controlpanel.v1.ConfigResponse\x12X\n" +
-	"\vListConfigs\x12#.controlpanel.v1.ListConfigsRequest\x1a$.controlpanel.v1.ListConfigsResponse\x12X\n" +
+	"\fCreateConfig\x12$.controlpanel.v1.CreateConfigRequest\x1a\x1f.controlpanel.v1.ConfigResponse\x12O\n" +
+	"\tGetConfig\x12!.controlpanel.v1.GetConfigRequest\x1a\x1f.controlpanel.v1.ConfigResponse\x12X\n" +
+	"\vListConfigs\x12#.controlpanel.v1.ListConfigsRequest\x1a$.controlpanel.v1.ListConfigsResponse\x12U\n" +
+	"\fUpdateConfig\x12$.controlpanel.v1.UpdateConfigRequest\x1a\x1f.controlpanel.v1.ConfigResponse\x12L\n" +
+	"\fDeleteConfig\x12$.controlpanel.v1.DeleteConfigRequest\x1a\x16.google.protobuf.Empty\x12X\n" +
 	"\vApplyConfig\x12#.controlpanel.v1.ApplyConfigRequest\x1a$.controlpanel.v1.ApplyConfigResponseB\x19Z\x17control-panel-go/gen/pbb\x06proto3"
 
 var (
@@ -441,32 +605,42 @@ func file_config_proto_rawDescGZIP() []byte {
 	return file_config_proto_rawDescData
 }
 
-var file_config_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_config_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_config_proto_goTypes = []any{
 	(*CreateConfigRequest)(nil),   // 0: controlpanel.v1.CreateConfigRequest
-	(*ListConfigsRequest)(nil),    // 1: controlpanel.v1.ListConfigsRequest
-	(*ConfigResponse)(nil),        // 2: controlpanel.v1.ConfigResponse
-	(*ListConfigsResponse)(nil),   // 3: controlpanel.v1.ListConfigsResponse
-	(*ApplyConfigRequest)(nil),    // 4: controlpanel.v1.ApplyConfigRequest
-	(*ApplyConfigResponse)(nil),   // 5: controlpanel.v1.ApplyConfigResponse
-	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
+	(*GetConfigRequest)(nil),      // 1: controlpanel.v1.GetConfigRequest
+	(*ListConfigsRequest)(nil),    // 2: controlpanel.v1.ListConfigsRequest
+	(*UpdateConfigRequest)(nil),   // 3: controlpanel.v1.UpdateConfigRequest
+	(*DeleteConfigRequest)(nil),   // 4: controlpanel.v1.DeleteConfigRequest
+	(*ConfigResponse)(nil),        // 5: controlpanel.v1.ConfigResponse
+	(*ListConfigsResponse)(nil),   // 6: controlpanel.v1.ListConfigsResponse
+	(*ApplyConfigRequest)(nil),    // 7: controlpanel.v1.ApplyConfigRequest
+	(*ApplyConfigResponse)(nil),   // 8: controlpanel.v1.ApplyConfigResponse
+	(*timestamppb.Timestamp)(nil), // 9: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 10: google.protobuf.Empty
 }
 var file_config_proto_depIdxs = []int32{
-	6, // 0: controlpanel.v1.ConfigResponse.created_at:type_name -> google.protobuf.Timestamp
-	6, // 1: controlpanel.v1.ConfigResponse.applied_at:type_name -> google.protobuf.Timestamp
-	2, // 2: controlpanel.v1.ListConfigsResponse.configs:type_name -> controlpanel.v1.ConfigResponse
-	6, // 3: controlpanel.v1.ApplyConfigResponse.applied_at:type_name -> google.protobuf.Timestamp
-	0, // 4: controlpanel.v1.ConfigService.CreateConfig:input_type -> controlpanel.v1.CreateConfigRequest
-	1, // 5: controlpanel.v1.ConfigService.ListConfigs:input_type -> controlpanel.v1.ListConfigsRequest
-	4, // 6: controlpanel.v1.ConfigService.ApplyConfig:input_type -> controlpanel.v1.ApplyConfigRequest
-	2, // 7: controlpanel.v1.ConfigService.CreateConfig:output_type -> controlpanel.v1.ConfigResponse
-	3, // 8: controlpanel.v1.ConfigService.ListConfigs:output_type -> controlpanel.v1.ListConfigsResponse
-	5, // 9: controlpanel.v1.ConfigService.ApplyConfig:output_type -> controlpanel.v1.ApplyConfigResponse
-	7, // [7:10] is the sub-list for method output_type
-	4, // [4:7] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	9,  // 0: controlpanel.v1.ConfigResponse.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 1: controlpanel.v1.ConfigResponse.applied_at:type_name -> google.protobuf.Timestamp
+	5,  // 2: controlpanel.v1.ListConfigsResponse.configs:type_name -> controlpanel.v1.ConfigResponse
+	9,  // 3: controlpanel.v1.ApplyConfigResponse.applied_at:type_name -> google.protobuf.Timestamp
+	0,  // 4: controlpanel.v1.ConfigService.CreateConfig:input_type -> controlpanel.v1.CreateConfigRequest
+	1,  // 5: controlpanel.v1.ConfigService.GetConfig:input_type -> controlpanel.v1.GetConfigRequest
+	2,  // 6: controlpanel.v1.ConfigService.ListConfigs:input_type -> controlpanel.v1.ListConfigsRequest
+	3,  // 7: controlpanel.v1.ConfigService.UpdateConfig:input_type -> controlpanel.v1.UpdateConfigRequest
+	4,  // 8: controlpanel.v1.ConfigService.DeleteConfig:input_type -> controlpanel.v1.DeleteConfigRequest
+	7,  // 9: controlpanel.v1.ConfigService.ApplyConfig:input_type -> controlpanel.v1.ApplyConfigRequest
+	5,  // 10: controlpanel.v1.ConfigService.CreateConfig:output_type -> controlpanel.v1.ConfigResponse
+	5,  // 11: controlpanel.v1.ConfigService.GetConfig:output_type -> controlpanel.v1.ConfigResponse
+	6,  // 12: controlpanel.v1.ConfigService.ListConfigs:output_type -> controlpanel.v1.ListConfigsResponse
+	5,  // 13: controlpanel.v1.ConfigService.UpdateConfig:output_type -> controlpanel.v1.ConfigResponse
+	10, // 14: controlpanel.v1.ConfigService.DeleteConfig:output_type -> google.protobuf.Empty
+	8,  // 15: controlpanel.v1.ConfigService.ApplyConfig:output_type -> controlpanel.v1.ApplyConfigResponse
+	10, // [10:16] is the sub-list for method output_type
+	4,  // [4:10] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_config_proto_init() }
@@ -474,14 +648,15 @@ func file_config_proto_init() {
 	if File_config_proto != nil {
 		return
 	}
-	file_config_proto_msgTypes[2].OneofWrappers = []any{}
+	file_config_proto_msgTypes[3].OneofWrappers = []any{}
+	file_config_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_config_proto_rawDesc), len(file_config_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

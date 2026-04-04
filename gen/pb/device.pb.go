@@ -9,6 +9,7 @@ package pb
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -90,6 +91,50 @@ func (x *CreateDeviceRequest) GetIsActive() bool {
 	return false
 }
 
+type GetDeviceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDeviceRequest) Reset() {
+	*x = GetDeviceRequest{}
+	mi := &file_device_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDeviceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDeviceRequest) ProtoMessage() {}
+
+func (x *GetDeviceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_device_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDeviceRequest.ProtoReflect.Descriptor instead.
+func (*GetDeviceRequest) Descriptor() ([]byte, []int) {
+	return file_device_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetDeviceRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 type ListDevicesRequest struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	IsActive       *bool                  `protobuf:"varint,1,opt,name=is_active,json=isActive,proto3,oneof" json:"is_active,omitempty"`
@@ -100,7 +145,7 @@ type ListDevicesRequest struct {
 
 func (x *ListDevicesRequest) Reset() {
 	*x = ListDevicesRequest{}
-	mi := &file_device_proto_msgTypes[1]
+	mi := &file_device_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -112,7 +157,7 @@ func (x *ListDevicesRequest) String() string {
 func (*ListDevicesRequest) ProtoMessage() {}
 
 func (x *ListDevicesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_device_proto_msgTypes[1]
+	mi := &file_device_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -125,7 +170,7 @@ func (x *ListDevicesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDevicesRequest.ProtoReflect.Descriptor instead.
 func (*ListDevicesRequest) Descriptor() ([]byte, []int) {
-	return file_device_proto_rawDescGZIP(), []int{1}
+	return file_device_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *ListDevicesRequest) GetIsActive() bool {
@@ -142,6 +187,126 @@ func (x *ListDevicesRequest) GetHostnameSearch() string {
 	return ""
 }
 
+type UpdateDeviceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Hostname      *string                `protobuf:"bytes,2,opt,name=hostname,proto3,oneof" json:"hostname,omitempty"`
+	Ip            *string                `protobuf:"bytes,3,opt,name=ip,proto3,oneof" json:"ip,omitempty"`
+	Location      *string                `protobuf:"bytes,4,opt,name=location,proto3,oneof" json:"location,omitempty"`
+	IsActive      *bool                  `protobuf:"varint,5,opt,name=is_active,json=isActive,proto3,oneof" json:"is_active,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateDeviceRequest) Reset() {
+	*x = UpdateDeviceRequest{}
+	mi := &file_device_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateDeviceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateDeviceRequest) ProtoMessage() {}
+
+func (x *UpdateDeviceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_device_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateDeviceRequest.ProtoReflect.Descriptor instead.
+func (*UpdateDeviceRequest) Descriptor() ([]byte, []int) {
+	return file_device_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UpdateDeviceRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UpdateDeviceRequest) GetHostname() string {
+	if x != nil && x.Hostname != nil {
+		return *x.Hostname
+	}
+	return ""
+}
+
+func (x *UpdateDeviceRequest) GetIp() string {
+	if x != nil && x.Ip != nil {
+		return *x.Ip
+	}
+	return ""
+}
+
+func (x *UpdateDeviceRequest) GetLocation() string {
+	if x != nil && x.Location != nil {
+		return *x.Location
+	}
+	return ""
+}
+
+func (x *UpdateDeviceRequest) GetIsActive() bool {
+	if x != nil && x.IsActive != nil {
+		return *x.IsActive
+	}
+	return false
+}
+
+type DeleteDeviceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteDeviceRequest) Reset() {
+	*x = DeleteDeviceRequest{}
+	mi := &file_device_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteDeviceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteDeviceRequest) ProtoMessage() {}
+
+func (x *DeleteDeviceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_device_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteDeviceRequest.ProtoReflect.Descriptor instead.
+func (*DeleteDeviceRequest) Descriptor() ([]byte, []int) {
+	return file_device_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *DeleteDeviceRequest) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
 type DeviceResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -156,7 +321,7 @@ type DeviceResponse struct {
 
 func (x *DeviceResponse) Reset() {
 	*x = DeviceResponse{}
-	mi := &file_device_proto_msgTypes[2]
+	mi := &file_device_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -168,7 +333,7 @@ func (x *DeviceResponse) String() string {
 func (*DeviceResponse) ProtoMessage() {}
 
 func (x *DeviceResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_device_proto_msgTypes[2]
+	mi := &file_device_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -181,7 +346,7 @@ func (x *DeviceResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeviceResponse.ProtoReflect.Descriptor instead.
 func (*DeviceResponse) Descriptor() ([]byte, []int) {
-	return file_device_proto_rawDescGZIP(), []int{2}
+	return file_device_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DeviceResponse) GetId() int64 {
@@ -235,7 +400,7 @@ type ListDevicesResponse struct {
 
 func (x *ListDevicesResponse) Reset() {
 	*x = ListDevicesResponse{}
-	mi := &file_device_proto_msgTypes[3]
+	mi := &file_device_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -247,7 +412,7 @@ func (x *ListDevicesResponse) String() string {
 func (*ListDevicesResponse) ProtoMessage() {}
 
 func (x *ListDevicesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_device_proto_msgTypes[3]
+	mi := &file_device_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -260,7 +425,7 @@ func (x *ListDevicesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDevicesResponse.ProtoReflect.Descriptor instead.
 func (*ListDevicesResponse) Descriptor() ([]byte, []int) {
-	return file_device_proto_rawDescGZIP(), []int{3}
+	return file_device_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ListDevicesResponse) GetDevices() []*DeviceResponse {
@@ -274,17 +439,32 @@ var File_device_proto protoreflect.FileDescriptor
 
 const file_device_proto_rawDesc = "" +
 	"\n" +
-	"\fdevice.proto\x12\x0fcontrolpanel.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"z\n" +
+	"\fdevice.proto\x12\x0fcontrolpanel.v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"z\n" +
 	"\x13CreateDeviceRequest\x12\x1a\n" +
 	"\bhostname\x18\x01 \x01(\tR\bhostname\x12\x0e\n" +
 	"\x02ip\x18\x02 \x01(\tR\x02ip\x12\x1a\n" +
 	"\blocation\x18\x03 \x01(\tR\blocation\x12\x1b\n" +
-	"\tis_active\x18\x04 \x01(\bR\bisActive\"m\n" +
+	"\tis_active\x18\x04 \x01(\bR\bisActive\"\"\n" +
+	"\x10GetDeviceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"m\n" +
 	"\x12ListDevicesRequest\x12 \n" +
 	"\tis_active\x18\x01 \x01(\bH\x00R\bisActive\x88\x01\x01\x12'\n" +
 	"\x0fhostname_search\x18\x02 \x01(\tR\x0ehostnameSearchB\f\n" +
 	"\n" +
-	"_is_active\"\xc0\x01\n" +
+	"_is_active\"\xcd\x01\n" +
+	"\x13UpdateDeviceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1f\n" +
+	"\bhostname\x18\x02 \x01(\tH\x00R\bhostname\x88\x01\x01\x12\x13\n" +
+	"\x02ip\x18\x03 \x01(\tH\x01R\x02ip\x88\x01\x01\x12\x1f\n" +
+	"\blocation\x18\x04 \x01(\tH\x02R\blocation\x88\x01\x01\x12 \n" +
+	"\tis_active\x18\x05 \x01(\bH\x03R\bisActive\x88\x01\x01B\v\n" +
+	"\t_hostnameB\x05\n" +
+	"\x03_ipB\v\n" +
+	"\t_locationB\f\n" +
+	"\n" +
+	"_is_active\"%\n" +
+	"\x13DeleteDeviceRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\"\xc0\x01\n" +
 	"\x0eDeviceResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostname\x12\x0e\n" +
@@ -294,10 +474,13 @@ const file_device_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"P\n" +
 	"\x13ListDevicesResponse\x129\n" +
-	"\adevices\x18\x01 \x03(\v2\x1f.controlpanel.v1.DeviceResponseR\adevices2\xc0\x01\n" +
+	"\adevices\x18\x01 \x03(\v2\x1f.controlpanel.v1.DeviceResponseR\adevices2\xb6\x03\n" +
 	"\rDeviceService\x12U\n" +
-	"\fCreateDevice\x12$.controlpanel.v1.CreateDeviceRequest\x1a\x1f.controlpanel.v1.DeviceResponse\x12X\n" +
-	"\vListDevices\x12#.controlpanel.v1.ListDevicesRequest\x1a$.controlpanel.v1.ListDevicesResponseB\x19Z\x17control-panel-go/gen/pbb\x06proto3"
+	"\fCreateDevice\x12$.controlpanel.v1.CreateDeviceRequest\x1a\x1f.controlpanel.v1.DeviceResponse\x12O\n" +
+	"\tGetDevice\x12!.controlpanel.v1.GetDeviceRequest\x1a\x1f.controlpanel.v1.DeviceResponse\x12X\n" +
+	"\vListDevices\x12#.controlpanel.v1.ListDevicesRequest\x1a$.controlpanel.v1.ListDevicesResponse\x12U\n" +
+	"\fUpdateDevice\x12$.controlpanel.v1.UpdateDeviceRequest\x1a\x1f.controlpanel.v1.DeviceResponse\x12L\n" +
+	"\fDeleteDevice\x12$.controlpanel.v1.DeleteDeviceRequest\x1a\x16.google.protobuf.EmptyB\x19Z\x17control-panel-go/gen/pbb\x06proto3"
 
 var (
 	file_device_proto_rawDescOnce sync.Once
@@ -311,23 +494,33 @@ func file_device_proto_rawDescGZIP() []byte {
 	return file_device_proto_rawDescData
 }
 
-var file_device_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_device_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_device_proto_goTypes = []any{
 	(*CreateDeviceRequest)(nil),   // 0: controlpanel.v1.CreateDeviceRequest
-	(*ListDevicesRequest)(nil),    // 1: controlpanel.v1.ListDevicesRequest
-	(*DeviceResponse)(nil),        // 2: controlpanel.v1.DeviceResponse
-	(*ListDevicesResponse)(nil),   // 3: controlpanel.v1.ListDevicesResponse
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*GetDeviceRequest)(nil),      // 1: controlpanel.v1.GetDeviceRequest
+	(*ListDevicesRequest)(nil),    // 2: controlpanel.v1.ListDevicesRequest
+	(*UpdateDeviceRequest)(nil),   // 3: controlpanel.v1.UpdateDeviceRequest
+	(*DeleteDeviceRequest)(nil),   // 4: controlpanel.v1.DeleteDeviceRequest
+	(*DeviceResponse)(nil),        // 5: controlpanel.v1.DeviceResponse
+	(*ListDevicesResponse)(nil),   // 6: controlpanel.v1.ListDevicesResponse
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 8: google.protobuf.Empty
 }
 var file_device_proto_depIdxs = []int32{
-	4, // 0: controlpanel.v1.DeviceResponse.created_at:type_name -> google.protobuf.Timestamp
-	2, // 1: controlpanel.v1.ListDevicesResponse.devices:type_name -> controlpanel.v1.DeviceResponse
+	7, // 0: controlpanel.v1.DeviceResponse.created_at:type_name -> google.protobuf.Timestamp
+	5, // 1: controlpanel.v1.ListDevicesResponse.devices:type_name -> controlpanel.v1.DeviceResponse
 	0, // 2: controlpanel.v1.DeviceService.CreateDevice:input_type -> controlpanel.v1.CreateDeviceRequest
-	1, // 3: controlpanel.v1.DeviceService.ListDevices:input_type -> controlpanel.v1.ListDevicesRequest
-	2, // 4: controlpanel.v1.DeviceService.CreateDevice:output_type -> controlpanel.v1.DeviceResponse
-	3, // 5: controlpanel.v1.DeviceService.ListDevices:output_type -> controlpanel.v1.ListDevicesResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
+	1, // 3: controlpanel.v1.DeviceService.GetDevice:input_type -> controlpanel.v1.GetDeviceRequest
+	2, // 4: controlpanel.v1.DeviceService.ListDevices:input_type -> controlpanel.v1.ListDevicesRequest
+	3, // 5: controlpanel.v1.DeviceService.UpdateDevice:input_type -> controlpanel.v1.UpdateDeviceRequest
+	4, // 6: controlpanel.v1.DeviceService.DeleteDevice:input_type -> controlpanel.v1.DeleteDeviceRequest
+	5, // 7: controlpanel.v1.DeviceService.CreateDevice:output_type -> controlpanel.v1.DeviceResponse
+	5, // 8: controlpanel.v1.DeviceService.GetDevice:output_type -> controlpanel.v1.DeviceResponse
+	6, // 9: controlpanel.v1.DeviceService.ListDevices:output_type -> controlpanel.v1.ListDevicesResponse
+	5, // 10: controlpanel.v1.DeviceService.UpdateDevice:output_type -> controlpanel.v1.DeviceResponse
+	8, // 11: controlpanel.v1.DeviceService.DeleteDevice:output_type -> google.protobuf.Empty
+	7, // [7:12] is the sub-list for method output_type
+	2, // [2:7] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -338,14 +531,15 @@ func file_device_proto_init() {
 	if File_device_proto != nil {
 		return
 	}
-	file_device_proto_msgTypes[1].OneofWrappers = []any{}
+	file_device_proto_msgTypes[2].OneofWrappers = []any{}
+	file_device_proto_msgTypes[3].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_device_proto_rawDesc), len(file_device_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

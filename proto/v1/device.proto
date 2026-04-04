@@ -4,11 +4,15 @@ package controlpanel.v1;
 
 option go_package = "control-panel-go/gen/pb";
 
+import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 service DeviceService {
   rpc CreateDevice (CreateDeviceRequest) returns (DeviceResponse);
+  rpc GetDevice (GetDeviceRequest) returns (DeviceResponse);
   rpc ListDevices (ListDevicesRequest) returns (ListDevicesResponse);
+  rpc UpdateDevice (UpdateDeviceRequest) returns (DeviceResponse);
+  rpc DeleteDevice (DeleteDeviceRequest) returns (google.protobuf.Empty);
 }
 
 message CreateDeviceRequest {
@@ -18,9 +22,25 @@ message CreateDeviceRequest {
   bool is_active = 4;
 }
 
+message GetDeviceRequest {
+  int64 id = 1;
+}
+
 message ListDevicesRequest {
   optional bool is_active = 1;
   string hostname_search = 2;  // substring search
+}
+
+message UpdateDeviceRequest {
+  int64 id = 1;
+  optional string hostname = 2;
+  optional string ip = 3;
+  optional string location = 4;
+  optional bool is_active = 5;
+}
+
+message DeleteDeviceRequest {
+  int64 id = 1;
 }
 
 message DeviceResponse {
