@@ -82,3 +82,63 @@ func (r *DeviceRepository) List(ctx context.Context, isActive *bool, hostnameSea
 	}
 	return devices, rows.Err()
 }
+
+func (r *DeviceRepository) Update(ctx context.Context, id int64, hostname, ip, location *string, isActive *bool) (*models.Device, error) {
+	setClauses := []string{}
+	args := []interface{}{}
+
+	if hostname != nil {
+		setClauses = append(setClauses, "hostname = ?")
+		args = append(args, *hostname)
+	}
+	if ip != nil {
+		setClauses = append(setClauses, "ip = ?")
+		args = append(args, *ip)
+	}
+	if location != nil {
+		setClauses = append(setClauses, "location = ?")
+		args = append(args, *location)
+	}
+	if isActive != nil {
+		setClauses = append(setClauses, "is_active = ?")
+		args = append(args, *isActive)
+	}
+
+	if len(setClauses) == 0 {
+		return r.GetByID(ctx, id)
+	}
+
+	query := "UPDATE devices SET " + strings.Join(setClauses, ", ") + " WHERE id = ?"
+	args = append(args, id)
+
+	result, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("update device: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("rows affected: %w", err)
+	}
+	if rows == 0 {
+		return nil, nil
+	}
+
+	return r.GetByID(ctx, id)
+}
+
+func (r *DeviceRepository) Delete(ctx context.Context, id int64) error {
+	result, err := r.db.ExecContext(ctx, `DELETE FROM devices WHERE id = ?`, id)
+	if err != nil {
+		return fmt.Errorf("delete device: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("rows affected: %w", err)
+	}
+	if rows == 0 {
+		return fmt.Errorf("device not found")
+	}
+	return nil
+}

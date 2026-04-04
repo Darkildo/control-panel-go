@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"control-panel-go/internal/models"
@@ -90,6 +91,58 @@ func (r *ConfigRepository) List(ctx context.Context, deviceID int64, page, pageS
 		configs = append(configs, &c)
 	}
 	return configs, total, rows.Err()
+}
+
+func (r *ConfigRepository) Update(ctx context.Context, id int64, version, content *string) (*models.Config, error) {
+	setClauses := []string{}
+	args := []interface{}{}
+
+	if version != nil {
+		setClauses = append(setClauses, "version = ?")
+		args = append(args, *version)
+	}
+	if content != nil {
+		setClauses = append(setClauses, "content = ?")
+		args = append(args, *content)
+	}
+
+	if len(setClauses) == 0 {
+		return r.GetByID(ctx, id)
+	}
+
+	query := "UPDATE configs SET " + strings.Join(setClauses, ", ") + " WHERE id = ?"
+	args = append(args, id)
+
+	result, err := r.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("update config: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("rows affected: %w", err)
+	}
+	if rows == 0 {
+		return nil, nil
+	}
+
+	return r.GetByID(ctx, id)
+}
+
+func (r *ConfigRepository) Delete(ctx context.Context, id int64) error {
+	result, err := r.db.ExecContext(ctx, `DELETE FROM configs WHERE id = ?`, id)
+	if err != nil {
+		return fmt.Errorf("delete config: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("rows affected: %w", err)
+	}
+	if rows == 0 {
+		return fmt.Errorf("config not found")
+	}
+	return nil
 }
 
 func (r *ConfigRepository) Apply(ctx context.Context, id int64) (time.Time, error) {
