@@ -47,3 +47,19 @@ func ConfigsToProto(configs []*models.Config) []*pb.ConfigResponse {
 	}
 	return result
 }
+
+func UserToProto(u *models.User) *pb.UserResponse {
+	return &pb.UserResponse{
+		Id:        u.ID,
+		Login:     u.Login,
+		CreatedAt: timestamppb.New(u.CreatedAt),
+	}
+}
+
+func UsersToProto(users []*models.User) []*pb.UserResponse {
+	result := make([]*pb.UserResponse, 0, len(users))
+	for _, u := range users {
+		result = append(result, UserToProto(u))
+	}
+	return result
+}
