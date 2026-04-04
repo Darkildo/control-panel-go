@@ -11,6 +11,7 @@ import (
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "control-panel-go/gen/pb"
 )
@@ -55,6 +56,23 @@ func (s *DeviceService) CreateDevice(ctx context.Context, req *pb.CreateDeviceRe
 	return converter.DeviceToProto(created), nil
 }
 
+func (s *DeviceService) GetDevice(ctx context.Context, req *pb.GetDeviceRequest) (*pb.DeviceResponse, error) {
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "device id is required")
+	}
+
+	device, err := s.deviceRepo.GetByID(ctx, req.Id)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed to get device")
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+	if device == nil {
+		return nil, status.Errorf(codes.NotFound, "device with id %d not found", req.Id)
+	}
+
+	return converter.DeviceToProto(device), nil
+}
+
 func (s *DeviceService) ListDevices(ctx context.Context, req *pb.ListDevicesRequest) (*pb.ListDevicesResponse, error) {
 	var isActive *bool
 	if req.IsActive != nil {
@@ -71,4 +89,41 @@ func (s *DeviceService) ListDevices(ctx context.Context, req *pb.ListDevicesRequ
 	return &pb.ListDevicesResponse{
 		Devices: converter.DevicesToProto(devices),
 	}, nil
+}
+
+func (s *DeviceService) UpdateDevice(ctx context.Context, req *pb.UpdateDeviceRequest) (*pb.DeviceResponse, error) {
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "device id is required")
+	}
+
+	if req.Ip != nil {
+		if ip := net.ParseIP(*req.Ip); ip == nil {
+			return nil, status.Error(codes.InvalidArgument, "invalid IP address")
+		}
+	}
+
+	updated, err := s.deviceRepo.Update(ctx, req.Id, req.Hostname, req.Ip, req.Location, req.IsActive)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed to update device")
+		return nil, status.Error(codes.Internal, "failed to update device")
+	}
+	if updated == nil {
+		return nil, status.Errorf(codes.NotFound, "device with id %d not found", req.Id)
+	}
+
+	return converter.DeviceToProto(updated), nil
+}
+
+func (s *DeviceService) DeleteDevice(ctx context.Context, req *pb.DeleteDeviceRequest) (*emptypb.Empty, error) {
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "device id is required")
+	}
+
+	err := s.deviceRepo.Delete(ctx, req.Id)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed to delete device")
+		return nil, status.Errorf(codes.NotFound, "device with id %d not found", req.Id)
+	}
+
+	return &emptypb.Empty{}, nil
 }
