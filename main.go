@@ -23,15 +23,20 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	grpcPort    = ":50051"
-	grpcWebPort = ":8080"
-	dbPath      = "control_panel.db"
-	jwtSecret   = "pupa-i-lupa"
-	jwtDuration = 24 * time.Hour
-)
+func getEnv(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
 
 func main() {
+	grpcPort := getEnv("GRPC_PORT", ":50051")
+	grpcWebPort := getEnv("GRPC_WEB_PORT", ":8080")
+	dbPath := getEnv("DB_PATH", "control_panel.db")
+	jwtSecret := getEnv("JWT_SECRET", "pupa-i-lupa")
+	jwtDuration := 24 * time.Hour
+
 	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 	db, err := database.New(dbPath, logger)
@@ -75,30 +80,35 @@ func main() {
 		}
 	}()
 
-	wrappedGrpc := grpcweb.WrapServer(grpcServer,
-		grpcweb.WithOriginFunc(func(origin string) bool {
-			return true
-		}),
-		grpcweb.WithAllowedRequestHeaders([]string{"*"}),
-	)
+	var httpServer *http.Server
+	if grpcWebPort != "" && grpcWebPort != "off" {
+		wrappedGrpc := grpcweb.WrapServer(grpcServer,
+			grpcweb.WithOriginFunc(func(origin string) bool {
+				return true
+			}),
+			grpcweb.WithAllowedRequestHeaders([]string{"*"}),
+		)
 
-	httpServer := &http.Server{
-		Addr: grpcWebPort,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if wrappedGrpc.IsGrpcWebRequest(r) || wrappedGrpc.IsAcceptableGrpcCorsRequest(r) {
-				wrappedGrpc.ServeHTTP(w, r)
-				return
-			}
-			http.NotFound(w, r)
-		}),
-	}
-
-	go func() {
-		logger.Info().Str("port", grpcWebPort).Msg("gRPC-Web server starting")
-		if err = httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			logger.Fatal().Err(err).Msg("gRPC-Web server failed")
+		httpServer = &http.Server{
+			Addr: grpcWebPort,
+			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if wrappedGrpc.IsGrpcWebRequest(r) || wrappedGrpc.IsAcceptableGrpcCorsRequest(r) {
+					wrappedGrpc.ServeHTTP(w, r)
+					return
+				}
+				http.NotFound(w, r)
+			}),
 		}
-	}()
+
+		go func() {
+			logger.Info().Str("port", grpcWebPort).Msg("gRPC-Web server starting")
+			if err = httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+				logger.Fatal().Err(err).Msg("gRPC-Web server failed")
+			}
+		}()
+	} else {
+		logger.Info().Msg("gRPC-Web server disabled (GRPC_WEB_PORT=off)")
+	}
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
@@ -106,9 +116,11 @@ func main() {
 
 	logger.Info().Msg("shutting down servers...")
 	grpcServer.GracefulStop()
-	err = httpServer.Close()
-	if err != nil {
-		logger.Error().Err(err).Msg("failed to close http server(gracefully)")
+	if httpServer != nil {
+		err = httpServer.Close()
+		if err != nil {
+			logger.Error().Err(err).Msg("failed to close http server(gracefully)")
+		}
 	}
 	logger.Info().Msg("servers stopped")
 }
