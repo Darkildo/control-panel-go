@@ -10,6 +10,7 @@ import (
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	pb "control-panel-go/gen/pb"
@@ -65,6 +66,23 @@ func (s *ConfigService) CreateConfig(ctx context.Context, req *pb.CreateConfigRe
 	return converter.ConfigToProto(created), nil
 }
 
+func (s *ConfigService) GetConfig(ctx context.Context, req *pb.GetConfigRequest) (*pb.ConfigResponse, error) {
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "config id is required")
+	}
+
+	config, err := s.configRepo.GetByID(ctx, req.Id)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed to get config")
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+	if config == nil {
+		return nil, status.Errorf(codes.NotFound, "config with id %d not found", req.Id)
+	}
+
+	return converter.ConfigToProto(config), nil
+}
+
 func (s *ConfigService) ListConfigs(ctx context.Context, req *pb.ListConfigsRequest) (*pb.ListConfigsResponse, error) {
 	if req.DeviceId <= 0 {
 		return nil, status.Error(codes.InvalidArgument, "device_id is required")
@@ -91,6 +109,37 @@ func (s *ConfigService) ListConfigs(ctx context.Context, req *pb.ListConfigsRequ
 		Page:     int32(page),
 		PageSize: int32(pageSize),
 	}, nil
+}
+
+func (s *ConfigService) UpdateConfig(ctx context.Context, req *pb.UpdateConfigRequest) (*pb.ConfigResponse, error) {
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "config id is required")
+	}
+
+	updated, err := s.configRepo.Update(ctx, req.Id, req.Version, req.Content)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed to update config")
+		return nil, status.Error(codes.Internal, "failed to update config")
+	}
+	if updated == nil {
+		return nil, status.Errorf(codes.NotFound, "config with id %d not found", req.Id)
+	}
+
+	return converter.ConfigToProto(updated), nil
+}
+
+func (s *ConfigService) DeleteConfig(ctx context.Context, req *pb.DeleteConfigRequest) (*emptypb.Empty, error) {
+	if req.Id <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "config id is required")
+	}
+
+	err := s.configRepo.Delete(ctx, req.Id)
+	if err != nil {
+		s.logger.Error().Err(err).Msg("failed to delete config")
+		return nil, status.Errorf(codes.NotFound, "config with id %d not found", req.Id)
+	}
+
+	return &emptypb.Empty{}, nil
 }
 
 func (s *ConfigService) ApplyConfig(ctx context.Context, req *pb.ApplyConfigRequest) (*pb.ApplyConfigResponse, error) {
